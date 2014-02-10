@@ -25,7 +25,7 @@ work, you may distribute the resulting work only under the
 same or similar license to this one.
 
 You should have received a copy of the license with this code.
-If not, see: http://creativecommons.org/licenses/by-nc-sa/3.0
+If not, see: http://creativecommons.org/licenses/by-sa/4.0/
 */
 
 #include <EEPROM.h>
