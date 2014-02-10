@@ -1,7 +1,7 @@
 open-turbidimeter-project
 =========================
 
-An open source, collaboratively-designed water quality monitoring device.
+The high cost of equipment to monitor water quality often puts valuable health tools out of reach for many communities in developing countries. Our low-cost device measures the turbidity, or "cloudiness", of water due to suspended particles, and can detect potentially dangerous concentrations of dirt in water -- even when they are invisible to the human eye! Our device integrates with a remote data-acquisition system to enable record keeping and real-time observation of water quality in rivers, wells, and treatment plants.
 
 Rationale
 =========
@@ -10,7 +10,7 @@ Turbidity refers to the dirtiness or cloudiness of a water sample. Technicians a
 
 The unaided eye can distinguish cloudy water from clear water, but even visibly clear samples of water can have dangerous levels of turbidity. The standard tool for measuring turbidity (a turbidimeter) is a complex piece of equipment. Handheld units capable of analyzing a single sample vial cost several hundred dollars; automated units capable of intermittently analyzing samples from a column of flowing water can cost several thousand. An affordable, open-source solution for turbidity sampling would be a major step towards assuring the quality and sustainability of programs that seek to expand global access to treated drinking water. Partly completed open-source turbidimeter projects can be found online, apparently abandoned.
 
-This post is to announce a new effort to design an open-source turbidimeter.
+
 
 Design Goals
 ============
@@ -25,8 +25,6 @@ Design Goals
 
 (5) Transmits data to an Android phone, via USB connection or Bluetooth,
 
-(6) Is powered by 2-4 AAA batteries,
-
-(7) Can collect samples, automatedly, every 15-minutes for one month without needing new batteries.
+(6) Is powered by 2-4 AA batteries,
 
 An open-source turbidimeter fulfilling the design goals listed above will not quite meet the strict technical requirements of the EPA, but will nonetheless provide a huge improvement over the status-quo of rural and small-scale water treatment monitoring, at a realistic cost.
