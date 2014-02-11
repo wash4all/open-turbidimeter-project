@@ -445,7 +445,6 @@ String baseNmap(float val){
 
 /*------------------------------GSM Modem------------------------------------*/
 //NOTE: connect the modem to pins 2 (TX), 3 (RX), 7 (RESET), 5V, and GND.
-
 String sendMessage(char* remoteNum, String message){
   sms.beginSMS(remoteNum);  // send the message
   sms.print(message);
