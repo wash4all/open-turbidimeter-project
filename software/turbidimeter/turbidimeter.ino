@@ -4,22 +4,20 @@
 
 // Flags
   boolean debug = false;  // IMPORTANT to update EEPROM, change this to true
-  boolean using_modem = false;  // If not using a GSM module, change to false
+  boolean using_modem = false; // if not using a GSM modem, change to false
   
 // Libraries
-//  uncomment these to use GSM modem:
-//  #define NO_PORTD_PINCHANGES
-//  #define NO_PORTC_PINCHANGE
-//  #include <GSM.h>
-  
+// NOTE: Be sure to use the libraries included with this sketch
+// (by placing them in your Arduino or Sketchbook folder)
+  #define NO_PORTD_PINCHANGES
+  #define NO_PORTC_PINCHANGES
+  #include <GSM.h>
   #include <PinChangeInt.h>
-  #include <PinChangeIntConfig.h>
   #include <EEPROM.h>
-  #include "EEPROMAnything.h"
+  #include <EEPROMAnything.h>
 
 // Definitions
   #define PINNUMBER "1111" // PIN Number for SIM card
-
   #define VERSION_BYLINE "Open Turb Prj\nBIOS v1.9\n2014-02-11\n"
   #define IR_LED   13    // light source
   #define TSL_S1   12    // S1 and S0 are pins on the TSL230R chip
@@ -29,9 +27,8 @@
     // Gauge voltage by comparison to ATMega328P's internal 1.1v
     // R1 and R2 form a voltage divider, with V_out = V_in * R2 / (R1 + R2)
     #define VPIN     A4    // read voltage from this pin
-    #define DIV_R1  1000   // resistance for R1
-    #define DIV_R2 10000   // resistance for R2
-    #define DIVISOR  11    // DIVISOR = (R1+R2)/R1
+    #define DIV_R1 10000   // resistance for R1
+    #define DIV_R2  1000   // resistance for R2
   #define SAMPLING_WINDOW 1000    // milleseconds between frequency calculations
   #define HIGH_SENSITIVITY  100   // sensitivity settings, set via S0 and S1 pins
   #define MED_SENSITIVITY   10    // ...
@@ -40,8 +37,8 @@
                          // button press (average is used for reporting)
 
 // Set up GSM library
-  //GSM gsmAccess;
-  //GSM_SMS sms;
+  GSM gsmAccess;
+  GSM_SMS sms;
   boolean notConnected = true;
   char* remoteNum = "14105555555";
   char* selfNum = "15125555555";
@@ -202,19 +199,19 @@ void loop() {
         displayForInterval(reading, "data",4000);            
         displayForInterval(-1, "clear", 100);
 
-//        if(using_modem){                                     
-//          int msg_len = 140;
-//          char txtMsg[msg_len];
-//          String bn, message_text;
-//          bn = baseNmap(reading);
-//          message_text = "#cod debug #con xxxxxxxxxxx #mtac " + bn;
-//          // This command as currently coded will send 
-//          // a coded text message of every reading!!
-//          openConnection();
-//          delay(30000);
-//          sendMessage(selfNum, message_text);
-//          closeConnection();
-//        }
+        if(using_modem){                                     
+          int msg_len = 140;
+          char txtMsg[msg_len];
+          String bn, message_text;
+          bn = baseNmap(reading);
+          message_text = "#cod debug #con xxxxxxxxxxx #mtac " + bn;
+          // This command as currently coded will send 
+          // a coded text message of every reading!!
+          openConnection();
+          delay(30000);
+          sendMessage(selfNum, message_text);
+          closeConnection();
+        }
       }
     }
     if(bpressed){
@@ -246,10 +243,11 @@ float divisionFactor_TSL230R(){
 }
 
 float getVoltageLevel(){
-  int sensorValue = analogRead(VPIN); //drop the first reading
+  float sensorValue = analogRead(VPIN); //drop the first reading
   delay(100);
-  sensorValue = analogRead(VPIN);
-  float voltage = float(sensorValue)/ 1023.0 * 1.1 * 11;  
+  sensorValue = float(analogRead(VPIN));
+  float divider_value = float(DIV_R2) / float(DIV_R1+DIV_R2);
+  float voltage = sensorValue/ 1023.0 * 1.1 / divider_value;  
     // normalize by max mapping value, internal reference voltage, 
     // and voltage divider, respectively.
   return voltage;
@@ -447,28 +445,28 @@ String baseNmap(float val){
 
 /*------------------------------GSM Modem------------------------------------*/
 //NOTE: connect the modem to pins 2 (TX), 3 (RX), 7 (RESET), 5V, and GND.
-//
-//String sendMessage(char* remoteNum, String message){
-//  sms.beginSMS(remoteNum);  // send the message
-//  sms.print(message);
-//  sms.endSMS();
-//  return "complete";
-//}
-//
-//void openConnection(){
-//  notConnected = true;
-//  while (notConnected) {
-//    digitalWrite(3,HIGH);       // Enable the RX pin
-//    if(gsmAccess.begin(PINNUMBER)==GSM_READY){notConnected = false;}
-//    else{delay(1000);}
-//  }
-//}
-//
-//void closeConnection(){
-//  while(notConnected==false){
-//    if(gsmAccess.shutdown()==1){
-//      digitalWrite(3,LOW);      // Disable the RX pin
-//      notConnected = true;
-//    }
-//  }
-//}
+
+String sendMessage(char* remoteNum, String message){
+  sms.beginSMS(remoteNum);  // send the message
+  sms.print(message);
+  sms.endSMS();
+  return "complete";
+}
+
+void openConnection(){
+  notConnected = true;
+  while (notConnected) {
+    digitalWrite(3,HIGH);       // Enable the RX pin
+    if(gsmAccess.begin(PINNUMBER)==GSM_READY){notConnected = false;}
+    else{delay(1000);}
+  }
+}
+
+void closeConnection(){
+  while(notConnected==false){
+    if(gsmAccess.shutdown()==1){
+      digitalWrite(3,LOW);      // Disable the RX pin
+      notConnected = true;
+   }
+  }
+}
