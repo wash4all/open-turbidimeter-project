@@ -410,22 +410,26 @@ float rawValue(int num_rdgs){
   return raw_value;
 }
 
+
 float takeReadings(int num_rdgs){
-float raw_value = rawValue(num_rdgs);
-float ntu_value = -1;
-    // get average reading, with highest and lowest discarded
-    // for much higher turbidities, code below could easily be expanded 
-   // and sensitivity dynamically adjusted
-  if(sensitivity == HIGH_SENSITIVITY){  
-    // map averaged raw sensor value to NTU
-    // using calibration info stored in persistent memory
-    if(raw_value > config.y4)       {ntu_value = raw_value * config.m4 + config.b4;}   
-    else if(raw_value > config.y3)  {ntu_value = raw_value * config.m3 + config.b3;}
-    else if(raw_value > config.y2)  {ntu_value = raw_value * config.m2 + config.b2;}
-    else if(raw_value > config.y1)  {ntu_value = raw_value * config.m1 + config.b1;}  
-    else                            {ntu_value = raw_value * config.m0 + config.b0;}
-    return ntu_value;
-  }else{return 9999;}
+  float raw_value = rawValue(num_rdgs);
+  float ntu_value = -1;
+      // get average reading, with highest and lowest discarded
+      // for much higher turbidities, code below could easily be expanded 
+     // and sensitivity dynamically adjusted
+    if(sensitivity == HIGH_SENSITIVITY){  
+      // map averaged raw sensor value to NTU
+      // using calibration info stored in persistent memory
+      if(raw_value > config.y4)       {ntu_value = raw_value * config.m4 + config.b4;}   
+      else if(raw_value > config.y3)  {ntu_value = raw_value * config.m3 + config.b3;}
+      else if(raw_value > config.y2)  {ntu_value = raw_value * config.m2 + config.b2;}
+      else if(raw_value > config.y1)  {ntu_value = raw_value * config.m1 + config.b1;}  
+      else                            {ntu_value = raw_value * config.m0 + config.b0;}
+      return ntu_value;
+    }
+    else{
+      return 9999;
+    }
 }
 
 
