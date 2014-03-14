@@ -398,9 +398,11 @@ float rawValue(int num_rdgs){
       pulse_count = 0;
     }
   }  
-  PCintPort::detachInterrupt(TSL_FREQ);                     //turn off frequency-counting function
-  digitalWrite(IR_LED, LOW);                                //turn off light source
-  if(num_rdgs > 3){                  //chuck out highest and lowest readings and average the rest, if there are four or more readings
+  PCintPort::detachInterrupt(TSL_FREQ);  //turn off frequency-counting function
+  digitalWrite(IR_LED, LOW);             //turn off light source
+  if(num_rdgs > 3){                  
+    // chuck out highest and lowest readings 
+    // and average the rest, if there are four or more readings
     sum -= (high + low);
     b = 2;
   }
