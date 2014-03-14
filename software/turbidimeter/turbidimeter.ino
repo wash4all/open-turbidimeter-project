@@ -102,8 +102,7 @@
     float y0, y1, y2, y3, y4,
           m0, m1, m2, m3, m4,
           b0, b1, b2, b3, b4;
-  }
-  config;
+  } config;
 
 
 /*---------------------------------------------------------------------------*/
@@ -374,7 +373,7 @@ void setSensitivity(int sens){    //set sensor sensitivity
 }
 
 
-float takeReadings(int num_rdgs){
+float rawValue(int num_rdgs){
   digitalWrite(IR_LED, HIGH); //turn on light source
   int rep_cnt = 0, b = 0;
   long sum = 0, low = 1000000, high = 0, rd = 0;
@@ -407,7 +406,13 @@ float takeReadings(int num_rdgs){
   }
 
 
-  float raw_value = float(sum) / float(num_rdgs - b) / div_fact, ntu_value = -1;
+  float raw_value = float(sum) / float(num_rdgs - b) / div_fact;
+  return raw_value;
+}
+
+float takeReadings(int num_rdgs){
+float raw_value = rawValue(num_rdgs);
+float ntu_value = -1;
     // get average reading, with highest and lowest discarded
     // for much higher turbidities, code below could easily be expanded 
    // and sensitivity dynamically adjusted
