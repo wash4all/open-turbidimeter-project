@@ -121,8 +121,7 @@ public#sendreading
     float y0, y1, y2, y3, y4,
           m0, m1, m2, m3, m4,
           b0, b1, b2, b3, b4;
-  }
-  config;
+  }config;
 
 
 /*---------------------------------------------------------------------------*/
@@ -213,7 +212,7 @@ void loop() {
         // - clear out register pins, for a clean display next 
         //   time device is powered off/on.
         // - build a text message and transmit,
-		// - check for and parse incoming messages,
+    		// - check for and parse incoming messages,
         //   if using_modem flag is set to true.                                                 
         float reading = takeReadings(READ_REPS);             
         displayForInterval(reading, "data",4000);            
@@ -320,7 +319,8 @@ void SevenSegDisplay(float f, String msg){
     long f2l = long(f * numeric_scale);
     for(int i = start; i < 4; i++){
       if(i == pt){
-        DisplayADigit(dispPorts[i],SevenSegNumbers[(f2l% powers[i]) / powers[i+1]] | SevenSegNumbers[10]);
+        DisplayADigit(dispPorts[i],
+          SevenSegNumbers[(f2l% powers[i]) / powers[i+1]] | SevenSegNumbers[10]);
           // perform modulo and integer division calculations to separate digits
           // bit mask with decimal point if needed
       }  
@@ -421,9 +421,11 @@ float takeReadings(int num_rdgs){
       pulse_count = 0;
     }
   }  
-  PCintPort::detachInterrupt(TSL_FREQ);                     //turn off frequency-counting function
-  digitalWrite(IR_LED, LOW);                                //turn off light source
-  if(num_rdgs > 3){                  //chuck out highest and lowest readings and average the rest, if there are four or more readings
+  PCintPort::detachInterrupt(TSL_FREQ);  //turn off frequency-counting function
+  digitalWrite(IR_LED, LOW);             //turn off light source
+  if(num_rdgs > 3){         
+  // chuck out highest and lowest readings and average the rest, 
+  // if there are four or more readings
     sum -= (high + low);
     b = 2;
   }
@@ -445,7 +447,7 @@ float takeReadings(int num_rdgs){
   }else{return 9999;}
 }
 
-
+ 
 String baseNmap(float val){
   // baseNmap encodes turbidity values in a base64 cipher, 
   // to save space if transmitting many values at once
@@ -490,6 +492,10 @@ void closeConnection(){
       notConnected = true;
    }
   }
+}
+
+String getMessageText(){
+//TODO: Fill this in
 }
 
 void parseMessage(String s){
