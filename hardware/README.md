@@ -32,8 +32,8 @@ Link: [Fritzing Diagram](Electronic Schematics/Fritzing Diagram.png)
 	
 _**Fig 2** Depiction of the internal components of the open-source turbidimeter (components labels cross-referenced in the parts list and Figure S3)_
 
-![Circuit Schematic](Electronic Schematics/Schematics.png)
-Link: [Circuit Schematic](Electronic Schematics/Schematics.png)
+![Circuit Schematic](Electronic Schematics/Schematic.png)
+Link: [Circuit Schematic](Electronic Schematics/Schematic.png)
 
 _**Fig 3** Schematic of the circuit board for the open-source turbidimeter (components labels cross-referenced in Table S1 and Figure S2)._
 
