@@ -42,13 +42,12 @@ _**Fig 3** Schematic of the circuit board for the open-source turbidimeter (comp
 1.  Gather the components listed in Section 1, and the tools listed in Section 3.
 2.  Print the parts described in Section 2 (or devise your own light-shielding case).
 3.  Wire together the internal components of the open-source turbidimeter according to Figures 2 and 3. Here are some key points:
-
-	a.  It's hard to see some connections of the circuit, such as the wiring of the voltage regulator (VR1), on Figure 2. The Arduino website has a well-illustrated tutorial on wiring the ATMega328P microprocessor (http://arduino.cc/en/Main/Standalone) that the reader may find useful.
-	b.  The semi-circles on the microprocessor (IC1) and shift register (IC2) indicate orientation of these components. It is vital that chips are aligned properly using these guides. Wiring them in the opposite orientation will destroy the chips once voltage is applied! Please note that the semi-circle on the TSL230R sensor in Figure 2 is merely a visual aid, and is not present on the actual chip.
-	c.  The pins of the seven-segment display are diagrammed by the distributor Electrodragon (http://www.electrodragon.com/w/index.php?title=7-Segment_Display). The linked document maps pin placement to function and representation in Figure 3 (e.g., the bottom left pin on the seven-segment display is pin 12, which maps to segment E of the display, which connects to port QE on the shift register).
-	d.  Resistors R2 and R3 combine to form a voltage divider, which is used to measure the voltage provided by the batteries. To achieve useful results, use resistors with tolerance of 1% or less. Tolerance levels of 5% are suitable for the other resistors in the device.
-	e.  The internal components list generally should be followed closely, however the power switch (S1) and button (S2) can easily be changed to suit the builder's aesthetic.
-	f.  As always, exercise caution. Do not attempt construction of any electrical device without knowledge of proper technique and safety.
+    1.  It's hard to see some connections of the circuit, such as the wiring of the voltage regulator (VR1), on Figure 2. The Arduino website has a well-illustrated tutorial on wiring the ATMega328P microprocessor (http://arduino.cc/en/Main/Standalone) that the reader may find useful.
+    2.  The semi-circles on the microprocessor (IC1) and shift register (IC2) indicate orientation of these components. It is vital that chips are aligned properly using these guides. Wiring them in the opposite orientation will destroy the chips once voltage is applied! Please note that the semi-circle on the TSL230R sensor in Figure 2 is merely a visual aid, and is not present on the actual chip.
+    3.  The pins of the seven-segment display are diagrammed by the distributor Electrodragon (http://www.electrodragon.com/w/index.php?title=7-Segment_Display). The linked document maps pin placement to function and representation in Figure 3 (e.g., the bottom left pin on the seven-segment display is pin 12, which maps to segment E of the display, which connects to port QE on the shift register).
+    4.  Resistors R2 and R3 combine to form a voltage divider, which is used to measure the voltage provided by the batteries. To achieve useful results, use resistors with tolerance of 1% or less. Tolerance levels of 5% are suitable for the other resistors in the device.
+    5.  The internal components list generally should be followed closely, however the power switch (S1) and button (S2) can easily be changed to suit the builder's aesthetic.
+    6.  As always, exercise caution. Do not attempt construction of any electrical device without knowledge of proper technique and safety.
 
 ## Programming
 
