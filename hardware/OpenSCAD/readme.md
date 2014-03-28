@@ -1,1 +1,0 @@
-These files are incomplete; most recent version is in SolidWorks. It would be nice to support free software modelers, but it's not possible at this time.
