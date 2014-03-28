@@ -1,0 +1,28 @@
+Qty	Name	Description	Vendor	Part #	Unit Price	Price
+1	IC1	8-bit Microcontroller	Mouser Electronics	ATMEGA328P-PU	2.24	2.24
+1	Q1	16MHz 18pF HC49S Crystals	Mouser Electronics	HC49US-16.000MABJ-UB	0.58	0.58
+1	VR1	5V Voltage Regulator	Mouser Electronics	LM7805CT	0.69	0.69
+1	IC2	595 Shift Register	Mouser Electronics	SN74HC595N	0.63	0.63
+2	C1,2	10uF Capacitor	Mouser Electronics	UKL1C100MDD1TA	0.15	0.3
+4	C3-6	22pF Capacitor	Mouser Electronics	1C10C0G220J050B	0.015	0.06
+1	C7	0.1nF Capacitor	Mouser Electronics	140-50S5-101J-RC	0.06	0.06
+1	R1	1/4 Watt 2.2 kOhm Resistor	Mouser Electronics	MF1/4DCT52R2201F	0.06	0.06
+1	R2	1/4 Watt 10 kOhm Resistor	Mouser Electronics	MF1/4DCT52A1002F	0.06	0.06
+1	R3	1/4 Watt 1 kOhm Resistor	Mouser Electronics	MFS1/4DCT52R1001F	0.13	0.13
+1	R4	1/4 Watt 22K Ohm Resistor	Mouser Electronics	MF1/4LCT52R223J	0.07	0.07
+4	R5-8	1/4 Watt 100 Ohm Resistor	Mouser Electronics	MF1/4DC1000F	0.06	0.24
+1	R9	1/4 Watt 220 Ohm Resistor	Mouser Electronics	MF1/4CCT52R2000F	0.14	0.14
+1	B1	Breadboard*	Electrodragon	5205940	0.23	0.23
+1	-	M/F Jumper Wires (22 count)	Electrodragon	5101606	1.2	1.2
+1	S2	Black Button	Mouser Electronics	104-0013-EVX	0.91	0.91
+1	L1	860nm Infrared LED	Mouser Electronics	W53SF6C	1.12	1.12
+1	L2	7-Segment Display	Electrodragon	4103417	0.35	0.35
+1	IC3	TSL230R Sensor	A-Wit	CS454000	5.94	5.94
+1	BATT	4xAA Battery Holder	Mouser Electronics	12BH348-GR	1.15	1.15
+1	-	Printed Cuvette Holder**	--	--	1.42	1.42
+1	-	Printed Turbidimeter Encasing**	--	--	7.55	7.55
+2		Glass Cuvette – 27mm diameter	(Various)	--	0.5	
+1		GSM Modem	Mouser Electronics	A000043	88.95	
+						
+*Breadboard will be used for demo units only.						
+**Cuvette Holder and Turbidimeter Encasing printed with Makerbot 3D printer (ABS $43.00/kg).						
