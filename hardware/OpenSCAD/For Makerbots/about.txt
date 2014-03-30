@@ -1,1 +1,0 @@
-Makerbots are limited in the size and precision of the parts they can print. These files are optimized for Makerbots.
