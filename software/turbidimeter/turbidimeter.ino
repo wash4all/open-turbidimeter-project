@@ -3,7 +3,7 @@
 /*---Developed by WASH4All, 2014. See wash4all.org for further information.--*/
 
 // Flags
-boolean debug = false;  // IMPORTANT to update EEPROM, change this to true
+boolean debug = false;  // IMPORTANT to reset EEPROM to deault config > true
 boolean using_modem = false; // if not using a GSM modem, change to false
   
 // Libraries
@@ -94,21 +94,24 @@ const byte SevenSegNumbers[13] = SEVEN_SEG_NUMBERS;
   
 // Characters: rEdYLStO
 const byte SevenSegLetters[8] =  SEVEN_SEG_LETTERS;
-char* remoteNum = "4109278905";
+
 // Use this structure for storing data & retrieving data persistently in EEPROM
 struct config_t{
   int foo;           //example
   long machine_id;   //example
   unsigned long last_calibration_timestamp; // in seconds since 1/1/1970 12:00a
-  // define calibration constants for 4 calibration curves
+  // define calibration constants for 5 calibration curves
   // y is the lower bound, m is the slope, b is the the y-intercept (y=mx+b)
   float y0, y1, y2, y3, y4,
   m0, m1, m2, m3, m4,
   b0, b1, b2, b3, b4;
-  //String codigo, password;
   char* remoteNum;
   char* selfNum;
-  //String sNum;
+  String userfn; // First name of the person using the device
+  String useremail; // Email address of the person using the device
+  char* userpn; // Phone number of the person using the device
+  String username; // Username for Open Source Water server
+  String password; // Password for Open Source Water server
 } config;
 
 /*---------------------------------------------------------------------------*/
@@ -170,8 +173,13 @@ void setup() {
     config.y4 = 6049;
     config.m4 = 0.0721;
     config.b4 = -138.9;
-    config.remoteNum = "1410*******";  //phone number of SMS gateway
+    config.remoteNum = "14109278905";  //phone number of Open Source Water SMS gateway
     config.selfNum = "1410*******";  //phone number of your SIM card
+    config.userfn = "****";
+    config.useremail = "***@****.org";
+    config.userpn = "1410*******";
+    config.password = "******";
+    config.username = "******";
     
     EEPROM_writeAnything(0, config);
     // Write example calibration settings to EEPROM memory
@@ -214,14 +222,16 @@ void loop() {
           char txtMsg[msg_len];
           String bn, message_text;
           bn = baseNmap(reading);
-          message_text = "#un [username] #pw [password] #reading " + bn;
+          message_text = "#un " + String(config.username) + 
+                        " #pw " + String(config.password) + 
+                        " #reading " + bn;
           // This command as currently coded will send 
           // a coded text message of every reading!!
           openConnection();
           delay(10000);
-          sendMessage(remoteNum, message_text);
-		  String s = getMessageText(); // say output is "<password>#adjsam#3600"
-  		  parseMessage(s);
+          sendMessage(config.remoteNum, message_text);
+		      String incoming = getMessageText();
+  		    parseMessage(incoming);
           closeConnection();
         }
       }
@@ -510,11 +520,10 @@ String baseNmap(float val){
 
 /*------------------------------GSM Modem------------------------------------*/
 //NOTE: connect the modem to pins 2 (TX), 3 (RX), 7 (RESET), 5V, and GND.
-String sendMessage(char* remoteNum, String message){
-  sms.beginSMS(remoteNum);  // send the message
+String sendMessage(char* phonenumber, String message){
+  sms.beginSMS(phonenumber);  // send the message
   sms.print(message);
   sms.endSMS();
-  return "complete";
 }
 
 void openConnection(){
@@ -528,6 +537,7 @@ void openConnection(){
     }
   }
 }
+
 void closeConnection(){
   while(notConnected==false){
     if(gsmAccess.shutdown()==1){
@@ -537,41 +547,77 @@ void closeConnection(){
 }
 
 String getMessageText(){
-//TODO: Fill this in
+  char c;
+  String s;
+
+  // If there are any SMSs available()  
+  if(sms.available()){    
+    // Read message bytes and print them
+    while(c=sms.read()){
+      s += c;
+    }
+    sms.flush();
+  }
+  return s;
 }
 
-void parseMessage(String s){
-  String s1, s2, s3;
-  int i1 = s.indexOf("#");
-  int i2 = s.lastIndexOf("#");
-  s1 = s.substring(0,i1);
-  s2 = s.substring(i1+1,i2);
-  s3 = s.substring(i2+1,s.length());
-  s = "";
-  if(s1 == "<password>"){
-    Serial.println("passes");
-    if(s2 == "adjsam"){
-      Serial.println("adjust sampling rate to " + s3 + " seconds per sample...");
-    }else if(s2 == "confon"){
-      Serial.println("send a message confirming receipt of message...");
-      //send message to <remote_num> with text "<sensor_id> running"
-    }else if(s2 == "passalert"){
-      Serial.println("pass the contents of this message on to the ...");
-      //send message to <user_num> with text (words[i] for i > 2)
-    }else if(s2 == "changeuser"){
-      Serial.println("change the stored user name and number...");
-      //delete old user struct
-      //EEPROM a struct with {'userfn': <POC_first_name>, 'useremail':<POC_email>, 'userpn': <POC_phone_num>}
-    }else if(s2 == "calibdate"){
-      Serial.println("send a message with the date of the last device calibration...");
-      //retrieve <last_calibration_date> and send sms to <remote_num>
-    }else if(s2 == "sendrdg"){
-      Serial.println("send an immediate turbidity reading...");
+void parseMessage(String msg){
+  /*  Takes: Text message string of form "PIN#command#arguments"
+  */
+  String pass, command, arguments;
+  int i1 = msg.indexOf("#");
+  int i2 = msg.lastIndexOf("#");
+  pass = msg.substring(0,i1);
+  command = msg.substring(i1+1,i2);
+  arguments = msg.substring(i2+1,msg.length());
+  msg = "";
+
+  if(pass == config.password){
+    if(command=="calibrate"){
+      calibrate();
+    }
+    else if(command=="adjsam"){
+          // For inline version: adjust sample rate
+          // Not implemented
+    }
+    else if(command=="confom"){
+          // Confirm receipt 
+          // send message to <remote_num> with text "<sensor_id> running"
+          String confirmation = "unit " + String(config.machine_id) + " is running";
+          sendMessage(config.remoteNum, confirmation);
+    }
+    else if(command=="passalert"){
+          // Send message to <user_num> with text from arguments
+          sendMessage(config.userpn, arguments);
+    }
+    else if(command=="changeuser"){
+        // Delete old user data
+        // EEPROM a struct with 
+        // {'userfn': <POC_first_name>, 
+        // 'useremail':<POC_email>, 
+        // 'userpn': <POC_phone_num>}
+        int i1 = arguments.indexOf("#");
+        int i2 = arguments.lastIndexOf("#");
+        config.userfn = arguments.substring(0,i1);
+        config.useremail = arguments.substring(i1+1,i2);
+        //String temp = arguments.substring(i2+1,arguments.length());
+        arguments.substring(i2+1,arguments.length()).toCharArray(config.userpn,10);
+        EEPROM_writeAnything(0, config);
+      }
+   else if(command=="calibdate"){
+      // Retrieve <last_calibration> and send sms to <remote_num>
+      sendMessage(config.remoteNum, String(config.last_calibration_timestamp));
+    }
+    else if(command=="sendrdg"){
       //turn_on_sensor and take_reading
       //send message <remote_num> with <sensor_reading>
-    }else{
-      Serial.println("command unrecognized");
-      //do nothing
+      float reading = takeReadings(READ_REPS);   
+      String bn, message_text;
+      bn = baseNmap(reading);
+      message_text = "#un " + String(config.username) + 
+                    " #pw " + String(config.password) + 
+                    " #reading " + bn;
+      sendMessage(config.remoteNum, message_text);
     }
   }
 }
@@ -581,6 +627,8 @@ void calibrate(){
   float y[10]; //raw readings
   float x[10] = {0.0, 0.2, 0.5, 10, 30, 100, 300, 500, 1200}; //NTU
   float m[5]; // slopes (readings/NTU)
+
+  displayForInterval(0, "ready",50000);
 
   displayForInterval(x[0], "data",10000);
   // should wait for button here
@@ -615,7 +663,7 @@ void calibrate(){
 */
   config.foo = 255;                               
   //EEPROMAnything seems to need the struct to start with a integer in [0,255]
-  config.machine_id = 11111111; //example
+  config.machine_id = config.machine_id; //example
   config.last_calibration_timestamp = 1390936721; // TODO: Calculate time here
   config.y0 = y[0];                                  
   config.m0 = 1 / m[0];                              
@@ -632,8 +680,8 @@ void calibrate(){
   config.y4 = y[8];                                  
   config.m4 = 1 / m[4];                              
   config.b4 = x[8] - y[8] / m[4];
-  config.remoteNum = "1410*******";  //phone number of SMS gateway
-  config.selfNum = "1410*******";  //phone number of your SIM card
+  config.remoteNum = config.remoteNum;  //phone number of SMS gateway
+  config.selfNum = config.selfNum;  //phone number of your SIM card
   
   EEPROM_writeAnything(0, config);
 
