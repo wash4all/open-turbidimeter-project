@@ -3,7 +3,7 @@
 /*---Developed by WASH4All, 2014. See wash4all.org for further information.--*/
 
 // Flags
-boolean debug = false;  // IMPORTANT to reset EEPROM to deault config > true
+boolean debug = false;  // IMPORTANT to reset EEPROM to default config -> true
 boolean using_modem = false; // if not using a GSM modem, change to false
   
 // Libraries
@@ -647,8 +647,7 @@ void calibrate(){
     m[i/2] = (y[i] - y[i-1]) / (x[i] - x[i-1]);
   }
 
-
-/* Now we have 4 linear equations in point-slope form:
+/* Now we have 5 linear equations in point-slope form:
      (y-y0) = m(x-x0),
    where y is the raw reading and x is the NTU value.
    Since normally we want to find NTU from the readings, rearrange:
@@ -661,9 +660,7 @@ void calibrate(){
     Then b = x0 - m*y0
     These are values we will to save in the config.
 */
-  config.foo = 255;                               
-  //EEPROMAnything seems to need the struct to start with a integer in [0,255]
-  config.machine_id = config.machine_id; //example
+
   config.last_calibration_timestamp = 1390936721; // TODO: Calculate time here
   config.y0 = y[0];                                  
   config.m0 = 1 / m[0];                              
@@ -680,8 +677,6 @@ void calibrate(){
   config.y4 = y[8];                                  
   config.m4 = 1 / m[4];                              
   config.b4 = x[8] - y[8] / m[4];
-  config.remoteNum = config.remoteNum;  //phone number of SMS gateway
-  config.selfNum = config.selfNum;  //phone number of your SIM card
   
   EEPROM_writeAnything(0, config);
 
