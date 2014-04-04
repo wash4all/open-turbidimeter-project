@@ -8,6 +8,7 @@
 - [Connectivity](#connectivity)
 - [Development and Dependencies](#development-and-dependencies)
 - [Licensing](#licensing)
+- [Funding Sources](#funding-sources)
 - [Contact](#contact)
 
 ## Background
@@ -75,6 +76,12 @@ The software and documentation for the project are covered by the [GNU General P
 
 [gpl]: https://www.gnu.org/copyleft/gpl.html
 [cc]: https://creativecommons.org/licenses/by-sa/4.0/
+
+## Funding Sources
+
+The Open Turbidimeter Project has been funded in part by EPA Grant Number [SU835517][grant]: "Smart" Turbidimeters for Remote Monitoring of Water Quality.
+
+[grant]: http://cfpub.epa.gov/ncer_abstracts/index.cfm/fuseaction/display.abstractDetail/abstract/10094/report/0
 
 ## Contact
 
