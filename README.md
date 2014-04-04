@@ -59,7 +59,7 @@ The original plan was for the turbidimeter to include a low-power Bluetooth modu
 
 Prototyping GSM modules like the one sold by Arduino are still rather expensive if you don't need the functionality. If you build your own turbimeter, it will be possible to use it as a standalone handheld device without including a GSM unit.
 
-## Development Dependencies
+## Development and Dependencies
 
 In the prototyping stage, most of the development is done using rapid prototyping tools like Arduino and 3D printed parts. We expect to transition off these tools soon as we finish designing custom components, although it will always be possible to build your own turbimeter by printing the parts and assembling the necessary circuitry.
 
