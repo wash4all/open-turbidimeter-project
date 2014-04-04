@@ -6,7 +6,7 @@
 - [Measuring Turbidity](#measuring-turbidity)
 - [Goals for the Turbidimeter](#goals-for-the-turbidimeter)
 - [Connectivity](#connectivity)
-- [Development and Dependencies](#development-and-depencies)
+- [Development and Dependencies](#development-and-dependencies)
 - [Licensing](#licensing)
 - [Contact](#contact)
 
