@@ -6,6 +6,7 @@ void calibrate(){
   float m[5]; // slopes (readings/NTU)
 
   displayForInterval(0, "ready",50000);
+  Serial.println("Starting calibration.");
 
   displayForInterval(x[0], "data",10000);
   // should wait for button here
@@ -57,5 +58,6 @@ void calibrate(){
   
   EEPROM_writeAnything(0, config);
 
+  Serial.println("Calibration complete.");
   displayForInterval(0, "ready",50000);
 }

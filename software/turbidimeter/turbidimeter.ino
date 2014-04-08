@@ -3,8 +3,8 @@
 /*---Developed by WASH4All, 2014. See wash4all.org for further information.--*/
 
 // Flags
-boolean debug = false;  // IMPORTANT to reset EEPROM to default config -> true
-boolean using_modem = false; // if not using a GSM modem, change to false
+const boolean debug=false;  // to reset memory to default config -> true
+const boolean using_modem=false; // if not using a GSM modem, change to false
   
 // Libraries
 // NOTE: Be sure to use the libraries included with this sketch
@@ -22,7 +22,7 @@ boolean using_modem = false; // if not using a GSM modem, change to false
 
 // Definitions
 #define PINNUMBER "1111" // PIN Number for SIM card
-#define VERSION_BYLINE "Open Turb Prj\nBIOS v1.10\n2014-03-29\n"
+#define VERSION_BYLINE "Open Turb Prj\nBIOS v1.11\n2014-04-08\n"
 #define IR_LED    4    // light source
 #define TSL_S1   12    // S1 and S0 are pins on the TSL230R chip
 #define TSL_S0   11
@@ -35,21 +35,20 @@ boolean using_modem = false; // if not using a GSM modem, change to false
    pairs of lines below to switch from common cathode to common anode seven-segment display
    NB: For the seven-segment display listed in the Supplementary Materials document, to distinguish
    common cathode and common anode models, look on the side of the display for the numbers '0.56'. 
-   If that number is followed by a plus (+) sign, the display is common cathode.
+   If that number is followed by a plus () sign, the display is common cathode.
 */
 
-boolean common_cathode_display = true; //if using a common-anode seven segment display, change to false
-/*if(common_cathode_display == true)*/ 
+#define common_cathode_display 1 //if using a common-anode seven segment display, change to false (0)
+#if common_cathode_display
 #define SEVEN_SEG_NUMBERS {B11000000,  B11111001,  B10100100,  B10110000, B10011001,  B10010010,  B10000010,  B11111000, B10000000,  B10010000,  B01111111,  B10111111, B11111111}
 #define SEVEN_SEG_LETTERS {B10101111,  B10000110,  B10100001,  B10010001, B11000111,  B10010010,  B10000111,  B11000000}
-
-/*if(common_cathode_display == false)*/
-//#define SEVEN_SEG_NUMBERS {B00111111,  B00000110,  B01011011,  B01001111, B01100110,  B01101101,  B01111101,  B00000111, B01111111,  B01101111,  B10000000,  B01000000, B00000000}
-//#define SEVEN_SEG_LETTERS {B01010000,  B01111001,  B01011110,  B01101110, B00111000,  B01101101,  B01111000,  B00111111}
-
+#else
+#define SEVEN_SEG_NUMBERS {B00111111,  B00000110,  B01011011,  B01001111, B01100110,  B01101101,  B01111101,  B00000111, B01111111,  B01101111,  B10000000,  B01000000, B00000000}
+#define SEVEN_SEG_LETTERS {B01010000,  B01111001,  B01011110,  B01101110, B00111000,  B01101101,  B01111000,  B00111111}
+#endif
 
 // Gauge voltage by comparison to ATMega328P's internal 1.1v
-// R1 and R2 form a voltage divider, with V_out = V_in * R2 / (R1 + R2)
+// R1 and R2 form a voltage divider, with V_out = V_in * R2 / (R1  R2)
 #define VPIN     A4    // read voltage from this pin
 #define DIV_R1 10000   // resistance for R1
 #define DIV_R2  1000   // resistance for R2
@@ -101,7 +100,7 @@ struct config_t{
   long machine_id;   //example
   unsigned long last_calibration_timestamp; // in seconds since 1/1/1970 12:00a
   // define calibration constants for 5 calibration curves
-  // y is the lower bound, m is the slope, b is the the y-intercept (y=mx+b)
+  // y is the lower bound, m is the slope, b is the the y-intercept (y=mxb)
   float y0, y1, y2, y3, y4,
   m0, m1, m2, m3, m4,
   b0, b1, b2, b3, b4;
@@ -119,7 +118,10 @@ struct config_t{
 /*---------------------------------------------------------------------------*/
 
 void setup() {
-
+  // Set up serial commication
+  Serial.begin(9600);
+  Serial.println(VERSION_BYLINE);
+  Serial.println("Press r to read, c to calibrate.");
   // Pin I/O settings
   pinMode(TSL_FREQ, INPUT); // light sensor
   pinMode(TSL_S0, OUTPUT);  // light sensor
@@ -130,7 +132,7 @@ void setup() {
   pinMode(shift_latch, OUTPUT); // shift register
   pinMode(shift_clock, OUTPUT); // shift register
   pinMode(shift_data,  OUTPUT); // shift register
-  for(int i = 0; i < num_displays; i++){
+  for(int i = 0; i < num_displays; i){
     pinMode(dispPorts[i], OUTPUT);
     // set display pins to output
   }
@@ -155,8 +157,7 @@ void setup() {
 
   if(debug){
     config.foo = 255;                               
-    //EEPROMAnything seems to need the struct to start with a integer in [0,255]
-    config.machine_id = 11111111; //example
+    config.machine_id = 11111111;
     config.last_calibration_timestamp = 1390936721;
     config.y0 = 0;                                  
     config.m0 = 0.02876;                              
@@ -173,8 +174,8 @@ void setup() {
     config.y4 = 6049;
     config.m4 = 0.0721;
     config.b4 = -138.9;
-    config.remoteNum = "14109278905";  //phone number of Open Source Water SMS gateway
-    config.selfNum = "1410*******";  //phone number of your SIM card
+    config.remoteNum = "14109278905";
+    config.selfNum = "1410*******";
     config.userfn = "****";
     config.useremail = "***@****.org";
     config.userpn = "1410*******";
@@ -191,7 +192,17 @@ void setup() {
 }
 
 void loop() {
-  sufficient_battery = true;
+  // Given there is enough battery power for the  sensor,
+  // - read sensor value for given number of times,
+  // - display the resulting value for 4000 milliseconds,
+  // - clear out register pins, for a clean display next 
+  //   time device is powered off/on.
+  // - build a text message and transmit,
+  // - check for and parse incoming messages,
+  //   if using_modem flag is set to true.  
+  // - check for incoming serial commands and process them.
+  boolean sufficient_battery = true;
+  float reading;
   if(sufficient_battery){
     bpress = analogRead(BPIN); 
     // check for button press event (0 = pressed)
@@ -204,36 +215,49 @@ void loop() {
       if(div_fact < 0){
         sufficient_battery = false;
       }     
-      else{
-        // Given there is enough battery power for the  sensor,
-        // - read sensor value for given number of times,
-        // - display the resulting value for 4000 milliseconds,
-        // - clear out register pins, for a clean display next 
-        //   time device is powered off/on.
-        // - build a text message and transmit,
-    		// - check for and parse incoming messages,
-        //   if using_modem flag is set to true.                                                 
-        float reading = takeReadings(READ_REPS);   
+      else{                                               
+        reading = takeReadings(READ_REPS); 
         displayForInterval(reading, "data",4000);            
         displayForInterval(-1, "clear", 100);
 
+        // GSM CONTROL OPTIONS
         if(using_modem){                                     
           int msg_len = 140;
           char txtMsg[msg_len];
           String bn, message_text;
           bn = baseNmap(reading);
-          message_text = "#un " + String(config.username) + 
-                        " #pw " + String(config.password) + 
+          message_text = "#un " + (String)config.username +
+                        " #pw " + (String)config.password +
                         " #reading " + bn;
           // This command as currently coded will send 
           // a coded text message of every reading!!
           openConnection();
           delay(10000);
           sendMessage(config.remoteNum, message_text);
-		      String incoming = getMessageText();
-  		    parseMessage(incoming);
+          String incoming = getMessageText();
+          parseMessage(incoming);
           closeConnection();
         }
+
+        // SERIAL CONTROL OPTIONS
+        if (Serial.available() > 0) {
+          char serialInput = Serial.read(); // get one-byte command option
+          Serial.println((char)serialInput); // tell the user what they pressed
+ 
+          switch (serialInput) { // do an action based on keypress
+          case 'r': // read   
+            Serial.println("Taking reading...");
+            reading = takeReadings(READ_REPS);
+            Serial.print(reading);
+            Serial.print(" NTU\n");
+            break;
+          case 'c': // calibrate 
+            calibrate();
+            break;
+          default: // if unknown key was pressed
+            Serial.println("Invalid input. Press r to read, c to calibrate.");
+         }
+        } 
       }
     }
     if(bpressed){
