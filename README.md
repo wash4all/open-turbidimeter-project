@@ -54,13 +54,16 @@ An open-source turbidimeter fulfilling the design goals listed above will not qu
 
 ## Connectivity
 
-The intent is for these devices to be deployed at rivers, wells, and treatment plants in possibly very remote areas that are visited infrequently by engineers and regulators from more urban areas. For this reason, the device will be integrated with a remote data-acquisition system to enable record keeping, troubleshooting, and real-time observation of water quality. 
+The intent is for these devices to be deployed at rivers, wells, and treatment plants in possibly very remote areas that are visited infrequently by engineers and regulators from more urban areas. For this reason, the device will be integrated with a remote data-acquisition system to enable record keeping, troubleshooting, and real-time observation of water quality. We are exploring a few different ways of getting data off the device wirelessly.
 
-We are exploring a few different ways of getting data off the device wirelessly. The checked boxes indicate ones we've tested.
+**Bluetooth** ```tested``` ```firmware support```
+Include a low-power Bluetooth module that sends data to a linked Android cellphone, which uses its data plan and SMS to sync to a remote server. The problem with this is that the cost of a smartphone doubles or triples the cost of the device. The phone itself is also subject to damage or theft, which cripples the data connection. The additional processing power and memory afforded by a smartphone, on the other hand, are attractive features.
 
-[x]  Include a low-power Bluetooth module that sends data to a linked Android cellphone, which uses its data plan and SMS to sync to a remote server. The problem with this is that the cost of a smartphone doubles or triples the cost of the device. The phone itself is also subject to damage or theft, which cripples the data connection. The additional processing power and memory afforded by a smartphone, on the other hand, is an attractive feature.
-[x]  Integrate a GSM modem (the core piece of technology used by mobile phones) into the turbidimeter itself to provide wireless connectivity. This is a less expensive approach, but has issues with reliability and increases power consumption *quite a bit*. We also want to encourage DIYers to build their own units, and prototyping GSM modules like the one sold by Arduino are still not cheap. Therefore we want to make sure that the turbidimeter can still be used without wireless capability if we go with this approach.
-[ ]  Connect the turbidimeter to an arbitrary mobile phone using a wired connection. This requires the hardware to support the connection (most likely a USB host adapter), but in theory any GSM-compliant phone would be controllable using it. Here's an example of an [Arduino-controlled Motorola Razr](https://www.circuitsathome.com/mcu/programming/interfacing-arduino-to-a-cellular-phone).
+**GSM Modem** ```tested``` ```firmware support```
+Integrate a GSM modem (the core piece of technology used by mobile phones) into the turbidimeter itself to provide wireless connectivity. This is a less expensive approach, but has issues with reliability and increases power consumption *quite a bit*. We also want to encourage DIYers to build their own units, and prototyping GSM modules like the one sold by Arduino are still not cheap. Therefore we want to make sure that the turbidimeter can still be used without wireless capability if we go with this approach.
+
+**Direct Connection to Mobile Phone** ```not tested``` ```no firmware support```
+Connect the turbidimeter to an arbitrary mobile phone using a wired connection. This requires the hardware to support the connection (most likely a USB host adapter), but in theory any GSM-compliant phone would be controllable using it. Here's an example of an [Arduino-controlled Motorola Razr](https://www.circuitsathome.com/mcu/programming/interfacing-arduino-to-a-cellular-phone).
 
 ## Development and Dependencies
 
