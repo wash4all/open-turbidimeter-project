@@ -204,19 +204,29 @@ void loop() {
   boolean sufficient_battery = true;
   float reading;
   if(sufficient_battery){
-    bpress = analogRead(BPIN); 
+    // SERIAL CONTROL OPTIONS
+    serialInput = 'x';
+    if (Serial.available() > 0) {
+      serialInput = Serial.read(); // get one-byte command option
+      Serial.println((char)serialInput); // tell the user what they pressed
+    }    
     // check for button press event (0 = pressed)
-    if (bpress >= BUTTON_EVENT_VALUE){
+    bpress = analogRead(BPIN); 
+    if (bpress >= BUTTON_EVENT_VALUE || serialInput == 'r'){
       bpressed = true;
       divisionFactor_TSL230R();                
       // read, but discard first reading
       div_fact = divisionFactor_TSL230R();     
       // take another reading of voltage divider
       if(div_fact < 0){
+        Serial.println("Battery low...");
         sufficient_battery = false;
       }     
-      else{                                               
-        reading = takeReadings(READ_REPS); 
+      else{ 
+        Serial.println("Taking reading...");        
+        reading = takeReadings(READ_REPS);
+        Serial.print(reading); 
+        Serial.print(" NTU\n");
         displayForInterval(reading, "data",4000);            
         displayForInterval(-1, "clear", 100);
 
@@ -237,28 +247,14 @@ void loop() {
           String incoming = getMessageText();
           parseMessage(incoming);
           closeConnection();
-        }
-
-        // SERIAL CONTROL OPTIONS
-        if (Serial.available() > 0) {
-          char serialInput = Serial.read(); // get one-byte command option
-          Serial.println((char)serialInput); // tell the user what they pressed
- 
-          switch (serialInput) { // do an action based on keypress
-          case 'r': // read   
-            Serial.println("Taking reading...");
-            reading = takeReadings(READ_REPS);
-            Serial.print(reading);
-            Serial.print(" NTU\n");
-            break;
-          case 'c': // calibrate 
-            calibrate();
-            break;
-          default: // if unknown key was pressed
-            Serial.println("Invalid input. Press r to read, c to calibrate.");
-         }
         } 
       }
+    }
+    else if(serialInput == 'c'){
+      calibrate();
+    }
+    else if(serialInput != 'x'){
+      Serial.println("Invalid input. Press r to read, c to calibrate.");
     }
     if(bpressed){
       bpressed = false; // reset
