@@ -76,8 +76,8 @@ void parseMessage(String msg){
         // {'userfn': <POC_first_name>, 
         // 'useremail':<POC_email>, 
         // 'userpn': <POC_phone_num>}
-        int i1 = arguments.indexOf("#");
-        int i2 = arguments.lastIndexOf("#");
+        int i1 = arguments.indexOf("!");
+        int i2 = arguments.lastIndexOf("!");
         config.userfn = arguments.substring(0,i1);
         config.useremail = arguments.substring(i1+1,i2);
         //String temp = arguments.substring(i2+1,arguments.length());
