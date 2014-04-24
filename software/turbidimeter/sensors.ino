@@ -62,8 +62,8 @@ float rawValue(int num_rdgs){
     b = 2;
   }
 
-
-  float raw_value = float(sum) / float(num_rdgs - b) / div_fact;
+  float if_factor = getLightMultiplier();
+  float raw_value = float(sum) / float(num_rdgs - b) / div_fact / if_factor;
   return raw_value;
 }
 
