@@ -1,4 +1,5 @@
 /*--------------------------Voltage Meter Functions--------------------------*/
+#define TEMP_PIN A4
 
 float divisionFactor_TSL230R(){
   float m = .0052;   //slope of sensor's linear response curve
@@ -38,9 +39,9 @@ float getLightMultiplier(){
   led_voltage = .0181 * getVoltageLevel() + 1.3376;                                         
   //calculate light intensity factor of LED due to voltage and current
   li_multiplier = ((led_voltage - led_vi) * li_slope + li_base) / li_base;               
-  temperature = readLM35Temperature();
+  float temp = readLM35Temperature();
   //calculate light intensity factor of LED due to ambient temperature
-  temp_multiplier = 1 + (temperature - temp_base) * temp_slope;                    
+  temp_multiplier = 1 + (temp - temp_base) * temp_slope;                    
   return li_multiplier * temp_multiplier;
 } 
 
@@ -52,3 +53,4 @@ float readLM35Temperature(){
   analogReference(DEFAULT);
   delay(200);
   return t;
+}
