@@ -87,6 +87,7 @@ const int shift_data = 6;   // SER
 // The above three pins connect the 74HC595 shift register
 const int dispPorts[num_displays] = {A3,A2,A1,A0};
 String language = "espanol"; //"english";
+char serialInput;
 
 // Characters: 0-9, '.', '-', blank                   
 const byte SevenSegNumbers[13] = SEVEN_SEG_NUMBERS;
